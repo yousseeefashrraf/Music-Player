@@ -9,9 +9,14 @@ import SwiftUI
 
 struct MusicPlayerMainView: View {
     @StateObject var audioManagerViewModel: AudioManagerViewModel = AudioManagerViewModel()
+
     var body: some View {
         ZStack{
-            LinearGradient(colors: [.brown, .black], startPoint: .topLeading, endPoint: .bottomTrailing)
+                let colors = audioManagerViewModel.commonColors
+            LinearGradient(colors: [colors.colorOne, colors.colorTwo, .black], startPoint: .topLeading, endPoint: .bottomTrailing)
+            
+
+
             VStack{
                 Spacer()
                 Spacer()
@@ -23,7 +28,7 @@ struct MusicPlayerMainView: View {
                     .animation(.spring, value: 10)
                 SongTitleView(currentSong: $audioManagerViewModel.currentMusic)
                     .padding(.horizontal,audioManagerViewModel.isPlaying ? 0 : 20 )
-                SongSliderView(value: $audioManagerViewModel.durationOf, audioManagerViewModel: audioManagerViewModel)
+                SongSliderView(value: $audioManagerViewModel.durationOf, audioManagerViewModel: audioManagerViewModel, colors: colors)
                     .padding(.horizontal,audioManagerViewModel.isPlaying ? 0 : 20 )
                 ActionsView(isPlaying: $audioManagerViewModel.isPlaying, audioManagerViewModel: audioManagerViewModel)
                     .padding(.bottom, 40)
@@ -39,13 +44,14 @@ struct MusicPlayerMainView: View {
 struct SongSliderView: View{
     @Binding var value: Double
     @StateObject var audioManagerViewModel: AudioManagerViewModel
+    var colors: (Color, Color)
     let padding = 10.0
     let width = (UIScreen.main.bounds.width)
     
     var body: some View{
         HStack(spacing: -10){
             RoundedRectangle(cornerRadius: 10)
-                .foregroundStyle(LinearGradient(colors: [.brown, .brown, .white], startPoint: .leading, endPoint: .trailing))
+                .foregroundStyle(LinearGradient(colors: [colors.0, colors.1, .white], startPoint: .leading, endPoint: .trailing))
                 .frame(width: value > 0.001 ? ((width-padding) * value) : 15  , height: 10)
                 .gesture(
                     DragGesture()
@@ -128,7 +134,7 @@ struct SongTitleView: View{
             VStack(alignment: .leading, spacing: 0){
                 Text(currentSong?.songName ?? "")
                 Text(currentSong?.artistName ?? "")
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(.placeholder)
             }
             .frame(alignment: .top)
             .font(.title2)
