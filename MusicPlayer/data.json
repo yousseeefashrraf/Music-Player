@@ -1,0 +1,77 @@
+{
+    "songs": [
+    {
+    "songName": "Tamally Maak",
+    "artistName": "Amr Diab",
+    "albumName": "Tamally Maak",
+    "audioName": "@AmrDiab - Tamally Maak  Official Music Video - HD Version  عمرو دياب - تملي معاك",
+    "imageName": "Tamally Maak",
+    "isSingle": false,
+    "isFavorite": false,
+    },
+    {
+        "songName": "Kelma",
+        "artistName": "Ramy Sabry",
+        "albumName": "Ghammadt Einy",
+        "audioName": "Ramy Sabry - Kelma  رامي صبري - كلمه",
+        "imageName": "Ghammadt Einy",
+        "isSingle": false,
+        "isFavorite": false,
+        },
+        {
+            "songName": "Tamally Maak",
+            "artistName": "Amr Diab",
+            "albumName": "Tamally Maak",
+            "audioName": "@AmrDiab - Tamally Maak  Official Music Video - HD Version  عمرو دياب - تملي معاك",
+            "imageName": "Tamally Maak",
+            "isSingle": false,
+            "isFavorite": false,
+            },
+            {
+                "songName": "MAGHOOL",
+                "artistName": "TUL8TE",
+                "albumName": "MAGHOOL",
+                "audioName": "TUL8TE - MAGHOOL  توو ليت - مجهول",
+                "imageName": "Maghool",
+                "isSingle": false,
+                "isFavorite": false,
+                },
+                {
+                    "songName": "BA2EENA GHORAB",
+                    "artistName": "TUL8TE",
+                    "albumName": "MAGHOOL",
+                    "audioName": "TUL8TE - BA2EENA GHORAB  توو ليت - بقينا غراب",
+                    "imageName": "Maghool",
+                    "isSingle": false,
+                    "isFavorite": false,
+                    },
+                    {
+                        "songName": "Agheeb",
+                        "artistName": "Amr Diab",
+                        "albumName": "Agheeb",
+                        "audioName": "Amr Diab  Agheeb  عمرو دياب  أغيب",
+                        "imageName": "Agheeb",
+                        "isSingle": false,
+                        "isFavorite": false,
+                        },
+                        {
+                            "songName": "We Malo",
+                            "artistName": "Amr Diab",
+                            "albumName": "Agheeb",
+                            "audioName": "Amr Diab We Malo  Official Music Video  عمرو دياب - وماله",
+                            "imageName": "Agheeb",
+                            "isSingle": false,
+                            "isFavorite": false,
+                            },
+                            {
+                                "songName": "Trooh Lmeen",
+                                "artistName": "Lege-Cy",
+                                "albumName": "",
+                                "audioName": "Lege-Cy - Trouh Lmeen  ليجي-سي - تروح لمين (Official Music Video)",
+                                "imageName": "Trooh Lameen",
+                                "isSingle": true,
+                                "isFavorite": false,
+                                }
+]
+  }
+
