@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct MainView: View {
+    @AppStorage("newUser") var isNew: Bool = true
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if isNew{
+            StartView(isNew: $isNew)
+        } else {
+            TabBarView()
         }
-        .padding()
     }
 }
 

@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct MusicPlayerMainView: View {
-    @StateObject var audioManagerViewModel: AudioManagerViewModel = AudioManagerViewModel()
+    @StateObject var audioManagerViewModel: AudioManagerViewModel
 
     var body: some View {
         ZStack{
                 let colors = audioManagerViewModel.commonColors
-            LinearGradient(colors: [colors.colorOne, colors.colorTwo, .black], startPoint: .topLeading, endPoint: .bottomTrailing)
-            
+            LinearGradient(colors: [colors.colorTwo, colors.colorOne], startPoint: .topLeading, endPoint: .bottomTrailing)
+                .blur(radius: 5)
 
+            
 
             VStack{
                 Spacer()
@@ -28,96 +29,212 @@ struct MusicPlayerMainView: View {
                     .animation(.spring, value: 10)
                 SongTitleView(currentSong: $audioManagerViewModel.currentMusic)
                     .padding(.horizontal,audioManagerViewModel.isPlaying ? 0 : 20 )
-                SongSliderView(value: $audioManagerViewModel.durationOf, audioManagerViewModel: audioManagerViewModel, colors: colors)
+                SongSliderView(value: $audioManagerViewModel.durationOf, audioManagerViewModel: audioManagerViewModel)
                     .padding(.horizontal,audioManagerViewModel.isPlaying ? 0 : 20 )
+                
                 ActionsView(isPlaying: $audioManagerViewModel.isPlaying, audioManagerViewModel: audioManagerViewModel)
-                    .padding(.bottom, 40)
-                Spacer()
+                    .padding(.bottom, 50)
+                    .padding(.horizontal, UIScreen.main.bounds.width * 0.1)
 
             }
             .frame(maxHeight: .infinity)
         }
+        .background(.black)
         .ignoresSafeArea()
     }
 }
 
+
 struct SongSliderView: View{
     @Binding var value: Double
+    @State var isDrag = false
+    @State var updatingWidth = 0.0
+    @State var lastWidth = 0.0
     @StateObject var audioManagerViewModel: AudioManagerViewModel
-    var colors: (Color, Color)
-    let padding = 10.0
-    let width = (UIScreen.main.bounds.width)
-    
+    @State var isSliding = false
+    var sliderWidth = UIScreen.main.bounds.width * 0.95
+    var padding = UIScreen.main.bounds.width * 0.05
+    var widthOffset = 10.0
+    let gridItems = [GridItem(.flexible(), alignment: .leading),
+                     GridItem(.flexible(), alignment: .trailing)]
     var body: some View{
-        HStack(spacing: -10){
+ 
+    
+        VStack{
+        ZStack(alignment: .leading){
+        RoundedRectangle(cornerRadius: 10)
+            .foregroundStyle(.gray)
+            .frame(width: sliderWidth-widthOffset-padding,height: 10)
+        
             RoundedRectangle(cornerRadius: 10)
-                .foregroundStyle(LinearGradient(colors: [colors.0, colors.1, .white], startPoint: .leading, endPoint: .trailing))
-                .frame(width: value > 0.001 ? ((width-padding) * value) : 15  , height: 10)
-                .gesture(
-                    DragGesture()
-                        .onChanged{ gesture in
-                            value = gesture.location.x /  (UIScreen.main.bounds.width)
-                        }
-                        .onEnded({ gesture in
-                            value = gesture.location.x /  (UIScreen.main.bounds.width)
-                            audioManagerViewModel.audioPlayer?.currentTime = TimeInterval(floatLiteral: ((audioManagerViewModel.audioPlayer?.duration ?? 0) * value))
-                           
-                        })
-                )
-            Circle()
-                .frame(width: 16, height: 16)
-                .foregroundStyle(LinearGradient(colors: [.white], startPoint: .leading, endPoint: .trailing))
-                .overlay {
-                    Circle()
-                        .stroke(.black, lineWidth: 2)
-                }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 20)
-        .clipped()
+                .foregroundStyle(.white)
+                .opacity(isSliding ? 1 : 0.7)
+                .frame(width: isSliding ? updatingWidth : ((sliderWidth-widthOffset-padding) * value), height: isSliding ? 14 : 10 )
+        
+        
     }
+       
+            
+        HStack{
+            
+
+            LazyVGrid(columns: gridItems) {
+               
+                let currentTime = audioManagerViewModel.getTime(timingScheme: .currentTime)
+                    
+                let durationTime = audioManagerViewModel.getTime(timingScheme: .duration)
+                
+                let currentTimeString: String = (currentTime.seconds == 0) ? "00" : "\(currentTime.seconds)"
+                 
+                let durationTimeString: String = (durationTime.seconds == 0) ? "00" : "\(durationTime.seconds)"
+                    
+                if isSliding{
+                  
+                    Text("\(currentTime.minutes):\(currentTimeString)")
+                        .animation(.default)
+                        .bold()
+                    
+                    Text("-\(durationTime.minutes):\(durationTimeString)")
+                        .animation(.default)
+                        .bold()
+                    
+                } else {
+                    
+                    Text("\(currentTime.minutes):\(currentTimeString)")
+                        .animation(.default)
+                    
+                    Text("-\(durationTime.minutes):\(durationTimeString)")
+                        .animation(.default)
+                }
+                
+               
+                
+            }
+           
+                
+        }
+        .foregroundStyle(isSliding ? .white :.gray)
+        .padding(.horizontal, 3)
+        .padding(.top, 20)
+        .frame(width: sliderWidth-widthOffset-padding,height: 10)
+
+    }
+
+        .frame(width: sliderWidth-widthOffset-padding, height: 100, alignment: .center)
+        .contentShape(Rectangle())
+        .gesture(
+            
+            DragGesture()
+                .updating(.init(initialValue: 0)){ _ , _, _ in
+                    withAnimation(.smooth){
+                        if !isSliding {
+                            isSliding = true
+                        }
+                    }
+                }
+                .onChanged({ gesture in
+                    let diffWidth = gesture.translation.width
+                    value =  (lastWidth + diffWidth) / (sliderWidth-widthOffset-padding)
+                    value = min(max(value, 0), 1)
+                    updatingWidth = (sliderWidth-widthOffset-padding) * value
+                   
+                })
+                .onEnded{ gesture in
+                        let diffWidth = gesture.translation.width
+                        value =  (lastWidth + diffWidth) / (sliderWidth-widthOffset-padding)
+                        value = min(max(value, 0), 1)
+
+                        audioManagerViewModel.audioPlayer?.currentTime = TimeInterval(floatLiteral: ((audioManagerViewModel.audioPlayer?.duration ?? 0) * value))
+                        
+                    withAnimation(.spring){
+                        isSliding = false
+                    }
+                    lastWidth = value == 1 ? 0 :  (sliderWidth-widthOffset-padding) * value
+                    }
+            
+            
+            
+        )
+        .scaleEffect(x: isSliding ? 1.05 : 1, y: isSliding ? 1.05 : 1)
+    }
+        
 }
 
+struct ButtonView: View{
+    @Binding var isPlaying: Bool
+    @StateObject var audioManagerViewModel: AudioManagerViewModel
+    var size: CGFloat
+    var body: some View{
+        Button{
+            withAnimation(.spring) {
+                isPlaying.toggle()
+            }
+            
+            audioManagerViewModel.toggleMusic()
+            
+        } label: {
+            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, alignment: .center)
+                .foregroundStyle(.white)
+
+                
+        }
+    }
+}
 struct ActionsView: View{
     @Binding var isPlaying: Bool
     @ObservedObject var audioManagerViewModel: AudioManagerViewModel
     var body: some View{
-        HStack(){
- 
+        HStack(alignment: .center){
+            let size: CGFloat = 25
             Button{
             } label: {
-                Image(systemName: "arrowtriangle.left.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 30, height: 30)
-                    .foregroundStyle(.white)
+                HStack(alignment: .center, spacing: 0){
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: size)
+                        .foregroundStyle(.white)
+                        
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: size)
+                        .foregroundStyle(.white)
+
+                        
+                }
+                .scaleEffect(x: -1)
+
+                
+                
             }
             Spacer()
-            
-            Button{
-                withAnimation(.bouncy) {
-                    isPlaying.toggle()
-                }
-                
-                audioManagerViewModel.toggleMusic()
-                
-            } label: {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 30, height: 30)
-                    .foregroundStyle(.white)
-            }
+            ButtonView(isPlaying: $isPlaying, audioManagerViewModel: audioManagerViewModel, size: 40)
+           
             
 
             Spacer()
             Button{
             } label: {
-                Image(systemName: "arrowtriangle.right.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 30, height: 30)
-                    .foregroundStyle(.white)
+                HStack(alignment: .center, spacing: 0){
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: size)
+                        .foregroundStyle(.white)
+                        
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: size)
+                        .foregroundStyle(.white)
+
+                        
+                }
+
             
             }
             }
@@ -144,6 +261,7 @@ struct SongTitleView: View{
             
             Button{
                 currentSong?.isFavorite.toggle()
+                
             } label: {
                 Image(systemName: currentSong?.isFavorite ?? false ? "star.fill" : "star")
                     .resizable()
@@ -159,8 +277,14 @@ struct SongTitleView: View{
     
 }
 #Preview {
-    MusicPlayerMainView()
-    
+    var audioPlayer = {
+        let player = AudioManagerViewModel()
+        player.currentMusic = SongsViewModel().songsData?.songs.first!
+        player.playMusic()
+        
+        return player
+    }
+    MusicPlayerMainView(audioManagerViewModel: audioPlayer())
 //    ActionsView(isPlaying: .constant(true))
 //    SongTitleView(currentSong: .constant( SongViewModel()?.songsData?.songs[0]))
 }

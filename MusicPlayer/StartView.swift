@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
+    @Binding var isNew: Bool
     var body: some View {
         ZStack{
             Color(.black)
@@ -31,7 +32,7 @@ struct StartView: View {
                 .bold()
                 Spacer()
                 Button(){
-                    
+                    isNew = false
                 }label: {
                     Text ("Next")
                         .foregroundStyle(.white)
@@ -54,5 +55,5 @@ struct StartView: View {
 }
 
 #Preview {
-    StartView()
+    StartView(isNew: .constant(false))
 }
