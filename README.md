@@ -61,3 +61,12 @@ MusicPlayer/
 ├── Main/
 │   ├── TabBarView.swift
 │   └── MainView.swift
+```
+
+<img src="demoAssets/1.PNG" alt="screenshot" width="300"/>
+
+<img src="demoAssets/2.PNG" alt="screenshot" width="300"/>
+
+<img src="demoAssets/3.PNG" alt="screenshot" width="300"/>
+
+<img src="demoAssets/4.JPG" alt="screenshot" width="300"/>
