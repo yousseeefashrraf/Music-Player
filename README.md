@@ -69,4 +69,4 @@ MusicPlayer/
 
 <img src="demoAssets/3.PNG" alt="screenshot" width="300"/>
 
-<img src="demoAssets/4.JPG" alt="screenshot" width="300"/>
+<img src="demoAssets/4.jpg" alt="screenshot" width="300"/>
