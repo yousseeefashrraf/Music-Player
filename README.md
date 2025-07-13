@@ -62,11 +62,14 @@ MusicPlayer/
 │   ├── TabBarView.swift
 │   └── MainView.swift
 ```
+| Home View | Album View | Album View | Now Playing |
+|-----------|------------|------------|-------------|
+| ![Homw View](demoAssets/4.jpg) | ![Album View](demoAssets/1.PNG) | ![Album View](demoAssets/2.PNG) | ![Now Playing](demoAssets/3.PNG) |
 
-<img src="demoAssets/1.PNG" alt="screenshot" width="300"/>
+## 👨‍💻 Author
 
-<img src="demoAssets/2.PNG" alt="screenshot" width="300"/>
+**Youssef Ashraf**  
+iOS Developer | Computer Science Student  
+[GitHub](https://github.com/yousseeefashrraf) · [YouTube](https://www.youtube.com/@YooussefAshraf)
 
-<img src="demoAssets/3.PNG" alt="screenshot" width="300"/>
-
-<img src="demoAssets/4.jpg" alt="screenshot" width="300"/>
+---
